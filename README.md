@@ -2,71 +2,46 @@
 
 Canonical registry and ownership system for **OSA Genesis — Lifetime Founder Pass**.
 
-## Slice 1 status
+## Production v0.2
 
-Implemented:
+Backend of record:
+- Supabase project: `osa-founder-vault`
+- Region: `eu-central-1`
+- Canonical Genesis supply: 50
+- #001 RESERVED
+- #002–#050 AVAILABLE
+- Row Level Security enabled
+- one-time transactional claim RPC
+- public registry with private ownership
+- traffic source tracking
+- orders/payment ledger ready for checkout integration
 
-- Genesis supply model: #001–#050
-- #001 creator reservation
-- PostgreSQL + Drizzle schema
-- OSA ID registration/login with scrypt password hashing
-- hashed server-side sessions
-- one-time claim tokens
-- transactional claim with row lock
-- ownership + Founder entitlements
-- public authenticity API/page
+Frontend:
+- Next.js 15
+- Supabase Auth / OSA ID
+- Genesis registry
+- claim
 - Founder Vault
-- Chronicle / audit events
-- acquisition tracking schema
-- cyber-dark landing
-- CI: tests + typecheck + build
+- Chronicle
+- public authenticity pages
+- terms/privacy/refund-transfer pages
+- marketplace launch pack
 
-Not included yet:
-
-- payment provider
-- marketplace APIs
-- shipping provider
-- production deployment
-- production email
-- transfer/resale workflow
-
-## Local run
+## Verify locally
 
 ```bash
-cp .env.example .env
-docker compose up -d
 npm install
-npm run db:migrate
-npm run seed:genesis
-npm run dev
-```
-
-Open: http://localhost:3000
-
-## Issue a one-time claim code
-
-```bash
-npm run issue:claim -- OSA-GEN-0007
-```
-
-The raw claim code is printed once. Only its SHA-256 hash is stored.
-
-## Verify
-
-```bash
 npm test
 npm run typecheck
 npm run build
 ```
 
-## Security notes
+The production Supabase publishable key is safe to expose to the browser by design; authorization is enforced by RLS and the authenticated claim RPC. No service-role key or database password is committed.
 
-This repo contains no production secrets. Production deployment must add HTTPS, secret management, rate limiting/WAF, email verification, password-reset flow, CSP/security headers, database backups and operational monitoring before public sales.
+## Current blocker
 
-## Architecture
+Direct Stripe checkout is intentionally not marked live until the Stripe account is connected and the payment product/webhook is verified end-to-end.
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+## Marketplace launch pack
 
-## Sales plan
-
-See [docs/SALES_PLAN.md](docs/SALES_PLAN.md).
+See [docs/MARKETPLACE_LAUNCH_PACK.md](docs/MARKETPLACE_LAUNCH_PACK.md).

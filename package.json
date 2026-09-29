@@ -1,6 +1,6 @@
 {
   "name": "osa-founder-vault",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -8,13 +8,10 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "seed:genesis": "tsx scripts/seed-genesis.ts",
-    "issue:claim": "tsx scripts/issue-claim-token.ts"
+    "test:watch": "vitest"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.57.4",
     "drizzle-orm": "^0.44.5",
     "next": "^15.5.3",
     "postgres": "^3.4.7",

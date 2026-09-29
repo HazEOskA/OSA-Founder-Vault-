@@ -2,6 +2,7 @@
 
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase-browser";
 
 export function AuthForm({ mode }: { mode: "login" | "register" }) {
   const router = useRouter();
@@ -14,23 +15,42 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
     setMessage(null);
 
     const form = new FormData(event.currentTarget);
-    const payload = {
-      email: String(form.get("email") ?? ""),
-      password: String(form.get("password") ?? ""),
-      ...(mode === "register" ? { displayName: String(form.get("displayName") ?? "") } : {}),
-    };
+    const email = String(form.get("email") ?? "").trim();
+    const password = String(form.get("password") ?? "");
+    const displayName = String(form.get("displayName") ?? "").trim();
 
-    const response = await fetch(`/api/${mode}`, {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-    const data = await response.json();
+    if (mode === "register") {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: { data: { display_name: displayName } },
+      });
 
-    if (!response.ok) {
-      setMessage(data.error ?? "Request failed");
-      setBusy(false);
-      return;
+      if (error) {
+        setMessage(error.message);
+        setBusy(false);
+        return;
+      }
+
+      if (data.user) {
+        await supabase.from("profiles").upsert({
+          user_id: data.user.id,
+          display_name: displayName || null,
+        });
+      }
+
+      if (!data.session) {
+        setMessage("Account created. Check your email to verify OSA ID, then sign in.");
+        setBusy(false);
+        return;
+      }
+    } else {
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) {
+        setMessage(error.message);
+        setBusy(false);
+        return;
+      }
     }
 
     router.push("/vault");
@@ -55,14 +75,14 @@ export function AuthForm({ mode }: { mode: "login" | "register" }) {
           name="password"
           type="password"
           autoComplete={mode === "register" ? "new-password" : "current-password"}
-          minLength={mode === "register" ? 12 : 1}
+          minLength={12}
           required
         />
       </label>
       <button className="button" disabled={busy} type="submit">
         {busy ? "Working…" : mode === "register" ? "Create OSA ID" : "Enter OSA"}
       </button>
-      {message && <div className="notice error">{message}</div>}
+      {message && <div className="notice">{message}</div>}
     </form>
   );
 }

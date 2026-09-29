@@ -1,40 +1,40 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase-browser";
 
 type PublicPass = {
   serial: string;
-  sequenceNumber: number;
+  sequence_number: number;
   status: string;
 };
 
 export function PassGrid() {
   const [items, setItems] = useState<PublicPass[]>([]);
-  const [failed, setFailed] = useState(false);
+  const [failed, setFailed] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/passes")
-      .then((r) => {
-        if (!r.ok) throw new Error("Failed");
-        return r.json();
-      })
-      .then((data) => setItems(data.passes))
-      .catch(() => setFailed(true));
+    supabase
+      .from("passes")
+      .select("serial,sequence_number,status")
+      .order("sequence_number", { ascending: true })
+      .then(({ data, error }) => {
+        if (error) {
+          setFailed(error.message);
+          return;
+        }
+        setItems((data ?? []) as PublicPass[]);
+      });
   }, []);
 
-  if (failed) {
-    return <p>Registry is offline until the database is connected.</p>;
-  }
-
-  if (!items.length) {
-    return <p>Loading the Genesis registry…</p>;
-  }
+  if (failed) return <p>Registry temporarily unavailable: {failed}</p>;
+  if (!items.length) return <p>Loading the Genesis registry…</p>;
 
   return (
     <div className="pass-list">
       {items.map((pass) => (
         <a className="pass-chip" href={`/pass/${pass.serial}`} key={pass.serial}>
-          <b>#{String(pass.sequenceNumber).padStart(3, "0")}</b>
+          <b>#{String(pass.sequence_number).padStart(3, "0")}</b>
           {pass.status}
         </a>
       ))}
