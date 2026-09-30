@@ -17,10 +17,10 @@ export default function BuyPage() {
           <div className="cell"><strong>#011–#050</strong><span>Released by market evidence, not by promise.</span></div>
         </div>
         <div className="notice">
-          Never buy an OSA Genesis Pass without a matching serial. Public authenticity can be checked before claim.
+          Featured launch pass: #002 / 050 (OSA-GEN-0002). Never buy an OSA Genesis Pass without a matching serial. Public authenticity can be checked before claim.
         </div>
         <div className="actions">
-          <Link className="button secondary" href="/#registry">Open registry</Link>
+          <Link className="button" href="/pass/OSA-GEN-0002">Verify #002</Link>\n          <Link className="button secondary" href="/#registry">Open registry</Link>
           <Link className="button secondary" href="/terms">Read terms</Link>
         </div>
       </section>
