@@ -5,6 +5,10 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "OSA Genesis — Lifetime Founder Pass",
   description: "The first 50 OSA Founder Passes. Numbered. Verifiable. Permanent.",
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
