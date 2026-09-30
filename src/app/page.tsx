@@ -29,7 +29,7 @@ export default function Home() {
         <div className="pass-shell">
           <div className="pass-top"><span>OSA · Genesis</span><span>Founder Class · 2026</span></div>
           <div className="pass-title">LIFETIME<br />FOUNDER PASS</div>
-          <div className="pass-number">007 / 050</div>
+          <div className="pass-number">002 / 050</div>
         </div>
       </section>
 
